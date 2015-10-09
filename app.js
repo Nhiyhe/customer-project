@@ -5,6 +5,10 @@
  var port = process.env.PORT || 3000;
  var customers = [{id:1,name:'James', lastname:'Scott'},{id:2,name:'Rob',lastname:'Hunter'},{id:3,name:'Peter',lastname:'Simon'}];
  
+ app.get('/',function(req,res){
+	 res.send('Welcome to Customer API Home Page!!!');
+ });
+ 
  app.get('/customers',function(req,res){
 	res.json(customers); 
  });

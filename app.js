@@ -1,5 +1,5 @@
  var express = require('express');
- 
+ var _ = require('underscore');
  var app = express();
  
  var port = process.env.PORT || 3000;
@@ -16,11 +16,13 @@
  app.get('/customers/:id',function(req,res){
 	 var matchedItem;
 	var passedId = parseInt(req.params.id,10);
-	customers.forEach(function(item){
+	/*customers.forEach(function(item){
 		if(passedId == item.id){
 			matchedItem = item;
 		}
-	});
+	});*/
+	
+	matchedItem = _.findWhere(customers,{id:passedId});
 	if(!matchedItem){
 		return res.status(404).send();
 	}else{
@@ -29,6 +31,9 @@
 	
  });
  
+ app.post('/customers',function(req,res){
+	 
+ });
  
  app.listen(port,function(){
 	 console.log('Server is running on port ' + port);

@@ -1,13 +1,13 @@
  var express = require('express');
  var _ = require('underscore');
- var bodyParser = ('body-parser');
+ var bodyParser =require('body-parser');
  var app = express();
 
- //var jsonBodyParser = app.use(bodyParser.json());
+app.use(bodyParser.json());
  
  var port = process.env.PORT || 3000;
  var customers = [{id:1,name:'James', lastname:'Scott'},{id:2,name:'Rob',lastname:'Hunter'},{id:3,name:'Peter',lastname:'Simon'}];
- 
+ var customerid = 4;
  app.get('/',function(req,res){
 	 res.send('Welcome to Customer API Home Page!!!');
  });
@@ -35,8 +35,16 @@
  });
  
  app.post('/customers', function(req,res){
-	 var body = req.body.name;
-	 console.log(body);
+	  var body = req.body;
+	 body = _.pick(body,'name','lastname');
+	 
+	if(!_.isString(body.name) || !_.isString(body.lastname) || body.name.trim() === 0 || body.lastname.trim() === 0){
+		return res.status(400).send();
+	}	 
+	 body.id = customerid++;	
+	 
+	 customers.push(body);
+	 res.json(body);
  });
  
  app.delete('/customers/:id',function(req, res){

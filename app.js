@@ -58,6 +58,31 @@ app.use(bodyParser.json());
 	 }
  });
  
+ app.put('/customers/:id',function(req,res){
+	var customerId =  parseInt(req.params.id,10);
+	var customerObj =_.findWhere(customers,{id:customerId});
+	var body = req.body;
+	body = _.pick(body,'name','lastname');
+	var validAttributes ={};
+	if(!customerObj){
+		return res.status(404).send();
+	}
+	 if(body.hasOwnProperty('name') && _.isString(body.name) && body.name.trim().length !== 0){
+		 validAttributes.name = body.name;
+	 }else if(body.hasOwnProperty('name')){
+		 return res.status(400).send();
+	 }
+	 
+	 if(body.hasOwnProperty('lastname') && _.isString(body.lastname) && body.lastname.trim().length !== 0){
+		 validAttributes.lastname = body.lastname;
+	 }else if(body.hasOwnProperty('lastname')){
+		 return res.status(400).send();
+	 }
+	 
+	 _.extend(customerObj,validAttributes);
+	 res.json(customerObj);
+ });
+ 
  app.listen(port,function(){
 	 console.log('Server is running on port ' + port);
  });

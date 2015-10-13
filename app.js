@@ -14,8 +14,6 @@ app.use(bodyParser.json());
 	 res.send('Welcome to Customer API Home Page!!!');
  });
  
-
- 
  app.get('/customers',function(req,res){
 	 var matchedQuery = [];
 	 var query = req.query;
@@ -34,20 +32,17 @@ app.use(bodyParser.json());
  });
  
  app.get('/customers/:id',function(req,res){
-	 var matchedItem;
+	 
 	var passedId = parseInt(req.params.id,10);
-	/*customers.forEach(function(item){
-		if(passedId == item.id){
-			matchedItem = item;
-		}
-	});*/
-	
-	matchedItem = _.findWhere(customers,{id:passedId});
-	if(!matchedItem){
-		return res.status(404).send();
-	}else{
-		res.json(matchedItem);
-	}
+		db.customer.findById(passedId).then(function(customer){
+			if(!!customer){
+				res.json(customer.toJSON())
+			}else{
+				res.status(404).json({"Error":"Item Not Found"});
+			}
+		},function(error){
+			res.status(500).send();
+		});
 	
  });
  
@@ -65,8 +60,8 @@ app.use(bodyParser.json());
 		
 	db.customer.create(body).then(function(cust){
 		res.json(cust.toJSON());
-	},function(error){
-		res.status(400).json(error);
+	},function(e){
+		res.status(400).json(e.toJSON());
 	});
  });
  

@@ -15,21 +15,21 @@ app.use(bodyParser.json());
  });
  
  app.get('/customers',function(req,res){
-	 var where = {}
+	 var predicate = {}
 	 var query = req.query;
 	 if(query.hasOwnProperty('q') && query.q.trim().length > 0){
-		 where.name = {
+		 predicate.name = {
 			$like: '%'+ query.q + '%'
 		 }	
 	 };
 	 
 	 if(query.hasOwnProperty('lastname') && query.lastname.trim().length > 0){
-		  where.lastname = {
+		  predicate.lastname = {
 			  $like: '%'+ query.lastname + '%'
 		  }
      };
 	 
-	db.customer.findAll({where: where}).then(function(cust){
+	db.customer.findAll({where: predicate}).then(function(cust){
 		res.json(cust);
 	},function(error){
 		res.status(500).send();

@@ -37,6 +37,9 @@
     },
     "sqlite3/sqlite3.d.ts": {
       "commit": "14ab703f435375194360cdba3abab61afc879c18"
+    },
+    "pg/pg.d.ts": {
+      "commit": "14ab703f435375194360cdba3abab61afc879c18"
     }
   }
 }

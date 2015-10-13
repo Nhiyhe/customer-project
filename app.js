@@ -15,20 +15,25 @@ app.use(bodyParser.json());
  });
  
  app.get('/customers',function(req,res){
-	 var matchedQuery = [];
+	 var where = {}
 	 var query = req.query;
 	 if(query.hasOwnProperty('q') && query.q.trim().length > 0){
-		 matchedQuery = _.filter(customers, function(cust){
-			 return cust.name.toLowerCase().indexOf(query.q.toLowerCase()) > -1;
-		 });
-		 return res.json(matchedQuery);
-	 }	 
+		 where.name = {
+			$like: '%'+ query.q + '%'
+		 }	
+	 };
+	 
 	 if(query.hasOwnProperty('lastname') && query.lastname.trim().length > 0){
-		  matchedQuery = _.where(customers,{lastname:query.lastname.toLowerCase()});
-		 return res.json(matchedQuery);
-	 }
-	res.json(customers); 
-	//res.json(db.customer.findAll().toJSON());
+		  where.lastname = {
+			  $like: '%'+ query.lastname + '%'
+		  }
+     };
+	 
+	db.customer.findAll({where: where}).then(function(cust){
+		res.json(cust);
+	},function(error){
+		res.status(500).send();
+	});
  });
  
  app.get('/customers/:id',function(req,res){
@@ -54,10 +59,7 @@ app.use(bodyParser.json());
 	if(!_.isString(body.name) || !_.isString(body.lastname) || body.name.trim() === 0 || body.lastname.trim() === 0){
 		return res.status(400).send();
 	};	 
-	 //body.id = customerid++;
-	 //customers.push(body);
-	 //res.json(body);
-		
+			
 	db.customer.create(body).then(function(cust){
 		res.json(cust.toJSON());
 	},function(e){

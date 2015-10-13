@@ -84,27 +84,33 @@ app.use(bodyParser.json());
  
  app.put('/customers/:id',function(req,res){
 	var customerId =  parseInt(req.params.id,10);
-	var customerObj =_.findWhere(customers,{id:customerId});
+	
 	var body = req.body;
 	body = _.pick(body,'name','lastname');
-	var validAttributes ={};
-	if(!customerObj){
-		return res.status(404).send();
-	}
-	 if(body.hasOwnProperty('name') && _.isString(body.name) && body.name.trim().length !== 0){
-		 validAttributes.name = body.name;
-	 }else if(body.hasOwnProperty('name')){
-		 return res.status(400).send();
+	var attributes ={};
+	
+	 if(body.hasOwnProperty('name') ){
+		 attributes.name = body.name;
+	 }	 
+	 if(body.hasOwnProperty('lastname')){
+		 attributes.lastname = body.lastname;
 	 }
 	 
-	 if(body.hasOwnProperty('lastname') && _.isString(body.lastname) && body.lastname.trim().length !== 0){
-		 validAttributes.lastname = body.lastname;
-	 }else if(body.hasOwnProperty('lastname')){
-		 return res.status(400).send();
-	 }
-	 
-	 _.extend(customerObj,validAttributes);
-	 res.json(customerObj);
+	db.customer.findById(customerId).then(function(cust){
+		if(cust){
+			cust.update(attributes).then(function(cust){
+				res.json(cust.toJSON());
+			},function(error){
+				res.status(400).send();
+			})
+		}else{
+			res.status(404).send();
+		}
+		
+	},function(error){
+		res.status(404).send();
+	})
+
  });
  
  

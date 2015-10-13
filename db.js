@@ -13,9 +13,6 @@ if(env === 'production'){
 });
 }
 
-
-
-
 var customer = sequelize.import(__dirname + '/models/customer.js');
 var sequelize = sequelize;
 var Sequelize = Sequelize;

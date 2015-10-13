@@ -68,14 +68,18 @@ app.use(bodyParser.json());
  });
  
  app.delete('/customers/:id',function(req, res){
+	  
 	 var customerToDeleteID = parseInt(req.params.id, 10);
-	 var customerToDelete = _.findWhere(customers,{id:customerToDeleteID});
-	 if(!customerToDelete){
-		 res.status(404).json({"Error:":"Customer not Found"});	
-	 }else{
-	 customers = _.without(customers,customerToDelete);
-	 res.json(customerToDelete);
-	 }
+	 db.customer.destroy({where:{id:customerToDeleteID}}).then(function(custCount){
+		 if(custCount === 0){
+			 res.status(404).json({"Error":"Item Not Found"});
+		 }else{
+			 res.status(204).send()
+		 }
+		 
+	 },function(error){
+		res.status(500).send(); 
+	 });
  });
  
  app.put('/customers/:id',function(req,res){
@@ -109,3 +113,5 @@ app.use(bodyParser.json());
 		console.log('Server is running on port ' + port);
 	});
  });
+
+

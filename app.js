@@ -1,7 +1,9 @@
  var express = require('express');
  var _ = require('underscore');
- var bodyParser =require('body-parser');
+ var bodyParser = require('body-parser');
  var app = express();
+ 
+ var db = require('./db');
 
 app.use(bodyParser.json());
  
@@ -12,8 +14,23 @@ app.use(bodyParser.json());
 	 res.send('Welcome to Customer API Home Page!!!');
  });
  
+
+ 
  app.get('/customers',function(req,res){
+	 var matchedQuery = [];
+	 var query = req.query;
+	 if(query.hasOwnProperty('q') && query.q.trim().length > 0){
+		 matchedQuery = _.filter(customers, function(cust){
+			 return cust.name.toLowerCase().indexOf(query.q.toLowerCase()) > -1;
+		 });
+		 return res.json(matchedQuery);
+	 }	 
+	 if(query.hasOwnProperty('lastname') && query.lastname.trim().length > 0){
+		  matchedQuery = _.where(customers,{lastname:query.lastname.toLowerCase()});
+		 return res.json(matchedQuery);
+	 }
 	res.json(customers); 
+	//res.json(db.customer.findAll().toJSON());
  });
  
  app.get('/customers/:id',function(req,res){
@@ -35,16 +52,22 @@ app.use(bodyParser.json());
  });
  
  app.post('/customers', function(req,res){
-	  var body = req.body;
+	 
+	 var body = req.body;
 	 body = _.pick(body,'name','lastname');
 	 
 	if(!_.isString(body.name) || !_.isString(body.lastname) || body.name.trim() === 0 || body.lastname.trim() === 0){
 		return res.status(400).send();
-	}	 
-	 body.id = customerid++;	
-	 
-	 customers.push(body);
-	 res.json(body);
+	};	 
+	 //body.id = customerid++;
+	 //customers.push(body);
+	 //res.json(body);
+		
+	db.customer.create(body).then(function(cust){
+		res.json(cust.toJSON());
+	},function(error){
+		res.status(400).json(error);
+	});
  });
  
  app.delete('/customers/:id',function(req, res){
@@ -83,6 +106,9 @@ app.use(bodyParser.json());
 	 res.json(customerObj);
  });
  
- app.listen(port,function(){
-	 console.log('Server is running on port ' + port);
+ 
+ db.sequelize.sync().then(function(){
+		app.listen(port,function(){
+		console.log('Server is running on port ' + port);
+	});
  });

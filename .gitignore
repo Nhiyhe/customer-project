@@ -1,2 +1,4 @@
 node_modules/
 typings/
+data/*.sqlite
+playground/*.sqlite

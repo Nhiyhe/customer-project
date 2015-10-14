@@ -3,7 +3,7 @@ var env = process.env.NODE_ENV || 'development';
 var sequelize;
 
 if(env === 'production'){
- sequelize = 	new Sequelize(process.env.DATABASE_URL,{
+ sequelize = new Sequelize(process.env.DATABASE_URL,{
 	'dialect':'postgres'	
 });
 }else{
@@ -14,12 +14,12 @@ if(env === 'production'){
 }
 
 var customer = sequelize.import(__dirname + '/models/customer.js');
-var sequelize = sequelize;
-var Sequelize = Sequelize;
+var user = sequelize.import(__dirname + '/models/user.js');
 
 
 module.exports = {
 	customer:customer,
 	sequelize:sequelize,
-	Sequelize:Sequelize	
+	Sequelize:Sequelize,
+	user:user	
 }

@@ -10,6 +10,7 @@ app.use(bodyParser.json());
  var port = process.env.PORT || 3000;
  var customers = [{id:1,name:'James', lastname:'Scott'},{id:2,name:'Rob',lastname:'Hunter'},{id:3,name:'Peter',lastname:'Simon'}];
  var customerid = 4;
+ 
  app.get('/',function(req,res){
 	 res.send('Welcome to Customer API Home Page!!!');
  });
@@ -113,6 +114,16 @@ app.use(bodyParser.json());
 
  });
  
+ app.post('/users',function(req,res){
+	var body = _.pick(req.body,'email','password');
+	db.user.create(body).then(function(user){
+		res.json(user.toJSON());
+		
+	},function(error){
+		res.status(400).json(error);
+	});
+	 
+ });
  
  db.sequelize.sync().then(function(){
 		app.listen(port,function(){

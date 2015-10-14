@@ -115,9 +115,10 @@ app.use(bodyParser.json());
  });
  
  app.post('/users',function(req,res){
-	var body = _.pick(req.body,'email','password');
+	var body = _.pick(req.body,'email','password','salt','password_hash');
+	
 	db.user.create(body).then(function(user){
-		res.json(user.toJSON());
+		res.json(user.toPublicJSON());
 		
 	},function(error){
 		res.status(400).json(error);

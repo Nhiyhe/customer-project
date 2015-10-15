@@ -12,7 +12,7 @@
       "commit": "3fc1377ce29dd9670975cb68615edf1b819fc4a5"
     },
     "node/node.d.ts": {
-      "commit": "14ab703f435375194360cdba3abab61afc879c18"
+      "commit": "3a6e1b8988eba0ba74fe4db20c950242552857e2"
     },
     "serve-static/serve-static.d.ts": {
       "commit": "3fc1377ce29dd9670975cb68615edf1b819fc4a5"
@@ -40,6 +40,12 @@
     },
     "pg/pg.d.ts": {
       "commit": "14ab703f435375194360cdba3abab61afc879c18"
+    },
+    "jsonwebtoken/jsonwebtoken.d.ts": {
+      "commit": "3a6e1b8988eba0ba74fe4db20c950242552857e2"
+    },
+    "crypto-js/crypto-js.d.ts": {
+      "commit": "3a6e1b8988eba0ba74fe4db20c950242552857e2"
     }
   }
 }

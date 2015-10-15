@@ -1,9 +1,9 @@
  var express = require('express');
  var _ = require('underscore');
  var bodyParser = require('body-parser');
- var app = express();
- 
+ var app = express(); 
  var db = require('./db');
+ var bcrypt = require('bcryptjs');
 
 app.use(bodyParser.json());
  
@@ -114,15 +114,38 @@ app.use(bodyParser.json());
 
  });
  
+ app.get('/users',function(req,res){
+	db.user.findAll().then(function(users){
+		if(users){
+			res.json(users);
+		}else{
+			res.status(400).send();
+		}
+	},function(error){
+		res.status(500).send();
+	});
+	 
+ });
+ 
  app.post('/users',function(req,res){
 	var body = _.pick(req.body,'email','password','salt','password_hash');
 	
 	db.user.create(body).then(function(user){
-		res.json(user.toPublicJSON());
+		res.json(user.toJSON());
 		
 	},function(error){
 		res.status(400).json(error);
 	});
+	 
+ });
+ 
+ app.post('/users/login',function(req,res){
+	var body = _.pick(req.body,'email','password');
+	db.user.authenticate(body).then(function(user){
+		res.json(user.toPublicJSON());
+	},function(error){
+		res.status(401).send();
+	});	
 	 
  });
  
